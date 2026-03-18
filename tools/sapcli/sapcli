@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+# This script is just a wrapper that configures PYTHONPATH
+# and runs the python script bin/sapcli
+# Its only purpose is to simplify testing of the tool when checked out from a
+# git repository.
+
+import os
+import sys
+
+import importlib.util
+from importlib.machinery import SourceFileLoader
+
+base_dir = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
+sys.path.append(base_dir)
+
+sapcli_bin = os.path.join(base_dir, 'bin', 'sapcli')
+loader = SourceFileLoader(fullname='sapcli', path=sapcli_bin)
+spec = importlib.util.spec_from_file_location('sapcli', sapcli_bin, loader=loader)
+sapcli = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(sapcli)
+sys.modules['sapcli'] = sapcli
+
+sys.exit(sapcli.main(sys.argv))

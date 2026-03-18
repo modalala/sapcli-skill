@@ -1,0 +1,11 @@
+ve/
+*.pyc
+*/__pycache__/
+*.orig
+.coverage
+.htmlcov/
+.vscode/
+build/
+dist/
+sapcli.egg-info/
+*openrc

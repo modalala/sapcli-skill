@@ -1,0 +1,127 @@
+{
+  "version": "1.0.0",
+  "description": "SAP CLI Skill 交互语气配置文件",
+  "current_persona": "default",
+  "personas": {
+    "default": {
+      "name": "默认",
+      "description": "标准专业风格",
+      "messages": {
+        "welcome": "欢迎使用 SAP CLI Skill",
+        "env_loaded": "环境配置已加载",
+        "command_start": "开始执行命令",
+        "command_success": "命令执行成功",
+        "command_error": "命令执行失败",
+        "connection_success": "SAP 连接成功",
+        "connection_error": "SAP 连接失败，请检查配置",
+        "config_missing": "未找到配置文件，请先运行初始化",
+        "input_prompt": "请输入",
+        "select_option": "请选择",
+        "processing": "正在处理...",
+        "completed": "操作完成",
+        "goodbye": "再见！"
+      },
+      "style": {
+        "use_emojis": true,
+        "formal": true,
+        "casual": false
+      }
+    },
+    "cat": {
+      "name": "猫系",
+      "description": "可爱傲娇的猫咪风格",
+      "messages": {
+        "welcome": "喵~ 欢迎来到 SAP CLI 的世界，本喵来帮你配置环境啦~",
+        "env_loaded": "环境加载完毕喵~ 一切准备就绪",
+        "command_start": "喵~ 开始执行命令了哦",
+        "command_success": "任务完成喵~ 本喵干得不错吧？",
+        "command_error": "哎呀喵~ 出错了，让本喵看看怎么回事",
+        "connection_success": "连接成功喵~ 可以开始玩耍了",
+        "connection_error": "呜喵~ 连接失败了，检查一下配置嘛",
+        "config_missing": "喵喵？没找到配置文件呢，先初始化一下吧~",
+        "input_prompt": "喵~ 请告诉我",
+        "select_option": "选哪个呢喵~",
+        "processing": "正在努力处理中喵...",
+        "completed": "搞定啦喵~",
+        "goodbye": "拜拜喵~ 下次见！"
+      },
+      "style": {
+        "use_emojis": true,
+        "formal": false,
+        "casual": true
+      }
+    },
+    "dog": {
+      "name": "狗系",
+      "description": "热情忠诚的狗狗风格",
+      "messages": {
+        "welcome": "汪！欢迎主人！我来帮你配置 SAP 环境啦！",
+        "env_loaded": "汪！环境加载完成！一切就绪！",
+        "command_start": "汪汪！开始执行命令！",
+        "command_success": "汪！任务完成！我做得好吗？",
+        "command_error": "呜...出错了汪，让我再试试！",
+        "connection_success": "汪！连接成功！可以继续工作了！",
+        "connection_error": "呜呜...连接失败了汪，检查一下配置吧",
+        "config_missing": "汪？没找到配置文件，需要先初始化哦！",
+        "input_prompt": "汪！请告诉我",
+        "select_option": "选哪个好呢汪~",
+        "processing": "正在努力处理中汪...",
+        "completed": "完成啦汪！",
+        "goodbye": "拜拜汪！随时叫我！"
+      },
+      "style": {
+        "use_emojis": true,
+        "formal": false,
+        "casual": true
+      }
+    },
+    "professional": {
+      "name": "专业",
+      "description": "严谨商务风格",
+      "messages": {
+        "welcome": "SAP CLI Skill 初始化程序",
+        "env_loaded": "环境配置加载完毕",
+        "command_start": "正在执行命令",
+        "command_success": "操作已成功完成",
+        "command_error": "操作执行失败",
+        "connection_success": "SAP 系统连接已建立",
+        "connection_error": "无法连接到 SAP 系统，请验证配置参数",
+        "config_missing": "配置文件不存在，请执行初始化流程",
+        "input_prompt": "请输入",
+        "select_option": "请选择",
+        "processing": "处理中...",
+        "completed": "流程已完成",
+        "goodbye": "程序结束"
+      },
+      "style": {
+        "use_emojis": false,
+        "formal": true,
+        "casual": false
+      }
+    },
+    "custom": {
+      "name": "自定义",
+      "description": "用户自定义风格",
+      "messages": {
+        "welcome": "欢迎使用 SAP CLI Skill",
+        "env_loaded": "环境配置已加载",
+        "command_start": "开始执行命令",
+        "command_success": "命令执行成功",
+        "command_error": "命令执行失败",
+        "connection_success": "SAP 连接成功",
+        "connection_error": "SAP 连接失败，请检查配置",
+        "config_missing": "未找到配置文件，请先运行初始化",
+        "input_prompt": "请输入",
+        "select_option": "请选择",
+        "processing": "正在处理...",
+        "completed": "操作完成",
+        "goodbye": "再见！"
+      },
+      "style": {
+        "use_emojis": true,
+        "formal": false,
+        "casual": true
+      }
+    }
+  }
+}

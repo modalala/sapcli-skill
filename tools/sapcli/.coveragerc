@@ -1,0 +1,8 @@
+[run]
+include=
+    sap/*
+    bin/*
+
+[report]
+exclude_also =
+    raise NotImplementedError

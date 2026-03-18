@@ -1,0 +1,302 @@
+# SAP CLI 环境初始化工作流
+# ==========================
+# 本文件记录交互式初始化流程的结构
+# 供开发参考和 LLM 理解对话流程
+#
+# 实际对话逻辑由 sapcli-init-agent (agents/sapcli-init-agent.md) 处理
+
+name: 初始化 SAP CLI 环境
+description: 交互式收集 SAP 连接配置信息并创建 .env 文件
+version: 1.0.0
+trigger:
+  keywords:
+    - "初始化sapcli"
+    - "sap初始化"
+    - "初始化环境"
+    - "配置sap"
+    - "sapcli配置"
+  intent: "创建或修改 SAP CLI 环境配置文件"
+
+# 架构
+architecture:
+  type: subagent-pattern
+  components:
+    - role: 主 Agent
+      responsibilities:
+        - 环境预检（检测现有 .env 文件）
+        - 调用 SubAgent
+        - 执行文件操作（write_file）
+        - 验证配置（validate.py）
+        - 测试 SAP 连接
+    
+    - role: sapcli-init-agent (SubAgent)
+      definition: agents/sapcli-init-agent.md
+      responsibilities:
+        - 对话交互管理
+        - 配置信息收集
+        - 输入验证
+        - 返回结构化 JSON
+
+# 工作流程
+workflow:
+  steps:
+    - id: 1
+      name: 环境预检
+      actor: 主 Agent
+      actions:
+        - 使用 glob 查找 .env.* 文件
+        - 列出已有环境列表
+        - 确定默认环境名
+      output:
+        existing_envs: ["erp-dev", "erp-test"]
+        default_env_name: "erp-dev"
+
+    - id: 2
+      name: 调用 SubAgent
+      actor: 主 Agent
+      actions:
+        - 调用 sapcli-init-agent
+        - 传递环境列表和默认名
+      handover: true
+
+    - id: 3
+      name: 欢迎与环境选择
+      actor: SubAgent
+      type: message
+      content: |
+        🚀 SAP CLI 初始化向导
+        
+        [检测现有环境]
+        ✓ 发现已有环境: {{existing_envs}}
+        
+        请选择:
+        1. 创建新环境
+        2. 修改现有环境
+        3. 查看配置
+        4. 取消
+      branches:
+        - option: "1"
+          next: 4
+        - option: "2"
+          next: 修改环境流程
+        - option: "3"
+          next: 显示配置后返回
+        - option: "4"
+          next: 取消流程
+
+    - id: 4
+      name: 环境命名
+      actor: SubAgent
+      type: input
+      field: env_name
+      prompt: "请输入环境名称"
+      default: "{{default_env_name}}"
+      validation:
+        - 只能包含：字母、数字、下划线、横线
+        - 不能以数字开头
+        - 不能与现有环境重名
+      next: 5
+
+    - id: 5
+      name: 收集必需配置
+      actor: SubAgent
+      type: form
+      fields:
+        - name: SAP_ASHOST
+          prompt: "SAP 服务器地址 (IP 或域名)"
+          required: true
+          validation: ["非空", "IP或域名格式"]
+          example: "127.0.0.1"
+          
+        - name: SAP_CLIENT
+          prompt: "客户端编号 (3位数字)"
+          required: true
+          default: "112"
+          validation: ["3位数字", "000-999"]
+          
+        - name: SAP_USER
+          prompt: "SAP 用户名"
+          required: true
+          validation: ["非空", "1-12字符"]
+          
+        - name: SAP_PASSWORD
+          prompt: "SAP 密码"
+          required: true
+          sensitive: true
+          validation: ["非空", "至少6位"]
+      next: 6
+
+    - id: 6
+      name: 询问可选配置
+      actor: SubAgent
+      type: confirm
+      prompt: "是否需要配置可选参数?"
+      default: false
+      branches:
+        - condition: true
+          next: 7
+        - condition: false
+          next: 8
+
+    - id: 7
+      name: 收集可选配置
+      actor: SubAgent
+      type: form
+      fields:
+        - name: SAP_SYSNR
+          prompt: "系统编号"
+          default: "00"
+          
+        - name: SAP_PORT
+          prompt: "HTTP/HTTPS 端口"
+          default: "8000"
+          
+        - name: SAP_SSL
+          prompt: "使用 SSL (yes/no)"
+          default: "no"
+          
+        - name: SAP_SSL_VERIFY
+          prompt: "验证 SSL 证书 (yes/no)"
+          default: "no"
+          
+        - name: SAP_LANGUAGE
+          prompt: "登录语言 (zh/en)"
+          default: "zh"
+          
+        - name: SAPNWRFC_HOME
+          prompt: "RFC SDK 路径"
+          default: "C:\\Users\\...\\nwrfcsdk"
+      next: 8
+
+    - id: 8
+      name: 配置确认
+      actor: SubAgent
+      type: summary
+      content: |
+        📋 配置摘要
+        
+        环境名称: {{env_name}}
+        
+        {{config_table}}
+        
+        请确认:
+        1. 确认并保存
+        2. 修改配置
+        3. 取消
+      branches:
+        - option: "1"
+          next: 9
+        - option: "2"
+          next: 修改配置项
+        - option: "3"
+          next: 取消流程
+
+    - id: 9
+      name: 返回结果
+      actor: SubAgent
+      type: output
+      format: json
+      data:
+        status: "success"
+        env_name: "{{env_name}}"
+        config: "{{collected_config}}"
+        user_confirmation: true
+      handback: true
+
+    - id: 10
+      name: 执行文件操作
+      actor: 主 Agent
+      actions:
+        - 使用 write_file 创建 .env.{env_name}
+        - 格式化配置内容为标准格式
+      next: 11
+
+    - id: 11
+      name: 验证配置
+      actor: 主 Agent
+      actions:
+        - 运行: python scripts/validate.py -e {env_name}
+        - 检查所有必需变量
+        - 验证格式正确性
+      next: 12
+
+    - id: 12
+      name: 测试连接
+      actor: 主 Agent
+      actions:
+        - 使用 sapcli package list 测试连接
+        - 验证用户名密码正确
+      next: 13
+
+    - id: 13
+      name: 完成
+      actor: 主 Agent
+      type: message
+      content: |
+        ✅ SAP CLI 初始化完成！
+        
+        环境: {{env_name}}
+        配置文件: .env.{{env_name}}
+        
+        验证结果:
+        - 目录结构: ✓
+        - sapcli 工具: ✓
+        - 环境变量: ✓
+        - SAP 连接: ✓
+        
+        现在你可以使用 sapcli 了:
+          python tools/sapcli/bin/sapcli --help
+
+# 异常处理
+exceptions:
+  - type: 用户取消
+    triggers: ["取消", "cancel", "退出", "quit"]
+    handler: |
+      返回 status: "cancelled"
+      友好提示用户已取消
+  
+  - type: 输入验证失败
+    handler: |
+      显示具体错误信息
+      要求重新输入
+      保持在当前步骤
+  
+  - type: 连接测试失败
+    handler: |
+      提示连接失败原因
+      询问是否修改配置
+      或保存配置稍后测试
+
+# 配置模板
+template: |
+  # SAP CLI 环境配置文件 - {{env_name}}
+  # 生成时间: {{timestamp}}
+  
+  # 必需配置
+  SAP_ASHOST={{SAP_ASHOST}}
+  SAP_SYSNR={{SAP_SYSNR}}
+  SAP_CLIENT={{SAP_CLIENT}}
+  SAP_USER={{SAP_USER}}
+  SAP_PASSWORD={{SAP_PASSWORD}}
+  
+  # 可选配置
+  SAP_PORT={{SAP_PORT}}
+  SAP_SSL={{SAP_SSL}}
+  SAP_SSL_VERIFY={{SAP_SSL_VERIFY}}
+  SAP_LANGUAGE={{SAP_LANGUAGE}}
+  
+  # RFC SDK
+  SAPNWRFC_HOME={{SAPNWRFC_HOME}}
+  
+  # 日志配置
+  SAPCLI_LOG_LEVEL={{SAPCLI_LOG_LEVEL}}
+  SAPCLI_HTTP_TIMEOUT={{SAPCLI_HTTP_TIMEOUT}}
+
+# 元数据
+metadata:
+  created: 2026-03-17
+  author: iFlow Agent
+  related_files:
+    - agents/sapcli-init-agent.md
+    - scripts/validate.py
+    - .env.example
