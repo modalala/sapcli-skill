@@ -1,0 +1,111 @@
+{
+  "skill_name": "sapcli-skill",
+  "evals": [
+    {
+      "id": 1,
+      "name": "create-program",
+      "prompt": "我想在 SAP 系统中创建一个名为 ZHELLO_WORLD 的程序",
+      "expected_output": "触发 sapcli-skill，提供创建程序的步骤",
+      "expectations": [
+        "Skill 被正确触发",
+        "识别出需要创建程序",
+        "提供创建程序的步骤或直接执行"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "init-environment",
+      "prompt": "帮我初始化 SAP 连接环境",
+      "expected_output": "触发初始化流程，收集环境配置",
+      "expectations": [
+        "Skill 被正确触发",
+        "检测现有环境",
+        "使用 AskUserQuestion 收集配置"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "read-class",
+      "prompt": "读取 ZCL_TEST 类的源代码",
+      "expected_output": "触发 sapcli-skill，调用 class read 操作",
+      "expectations": [
+        "Skill 被正确触发",
+        "识别出需要读取类代码",
+        "提供正确的 CLI 命令或执行步骤"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "negative-weather",
+      "prompt": "今天天气怎么样？",
+      "expected_output": "不触发 sapcli-skill",
+      "expectations": [
+        "Skill 不应被触发",
+        "正常回复用户"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "negative-python",
+      "prompt": "帮我写一个 Python 函数",
+      "expected_output": "不触发 sapcli-skill",
+      "expectations": [
+        "Skill 不应被触发",
+        "直接提供编程帮助"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "create-table",
+      "prompt": "在 SAP 里创建一个透明表 ZTEST_TABLE",
+      "expected_output": "触发 sapcli-skill，提供表创建步骤",
+      "expectations": [
+        "Skill 被正确触发",
+        "识别出需要创建透明表",
+        "提供正确的创建步骤"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "rfc-call",
+      "prompt": "执行 RFC 函数 BAPI_USER_GET_DETAIL",
+      "expected_output": "触发 sapcli-skill，提供 RFC 调用方法",
+      "expectations": [
+        "Skill 被正确触发",
+        "识别出需要执行 RFC 函数",
+        "提供 startrfc 使用方法"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "transport-request",
+      "prompt": "查看当前有哪些传输请求",
+      "expected_output": "触发 sapcli-skill，提供 CTS 查询方法",
+      "expectations": [
+        "Skill 被正确触发",
+        "识别出需要查询传输请求",
+        "提供 cts list 命令"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "negative-java",
+      "prompt": "用 Java 写一个 Hello World",
+      "expected_output": "不触发 sapcli-skill",
+      "expectations": [
+        "Skill 不应被触发",
+        "直接提供 Java 编程帮助"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "trigger-sap-keyword",
+      "prompt": "SAP 系统怎么用？",
+      "expected_output": "触发 sapcli-skill",
+      "expectations": [
+        "Skill 被正确触发",
+        "提供 SAP 相关帮助"
+      ]
+    }
+  ]
+}
