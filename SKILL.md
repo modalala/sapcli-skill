@@ -58,19 +58,19 @@ license: MIT
 
 ### 流程
 
-1. **检测现有环境**: 查找 `.env.*` 文件
+1. **检测现有环境**: 在 skill 目录下查找 `.env.*` 文件
 2. **收集配置**: 使用 AskUserQuestion 一次性收集：
    - 环境名称 (默认: erp-dev)
    - SAP_ASHOST (服务器地址)
    - SAP_CLIENT (客户端)
    - SAP_USER (用户名)
    - SAP_PASSWORD (密码)
-3. **创建配置文件**: 写入 `.env.{env_name}`
+3. **创建配置文件**: 写入 skill 目录下的 `.env.{env_name}`
 4. **验证连接**: 运行 `python scripts/validate.py -e {env_name}`
 
 ### 多环境支持
 
-支持同时管理多个 SAP 环境：
+配置文件位于 skill 目录（`.claude/skills/sapcli-skill/`）下：
 - `.env.erp-dev` - ERP 开发环境
 - `.env.erp-test` - ERP 测试环境
 - `.env.erp-prod` - ERP 生产环境
@@ -130,7 +130,7 @@ python /path/to/sapcli-skill/tools/sapcli/bin/sapcli program read ZSDR136
 
 ### 环境配置文件
 
-配置文件位于 `.env.erp-dev`，包含 SAP 连接参数：
+配置文件位于 skill 目录下 `.claude/skills/sapcli-skill/.env.erp-dev`：
 
 ```ini
 SAP_ASHOST=YourSapHost

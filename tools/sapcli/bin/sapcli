@@ -20,6 +20,37 @@ if sys.platform == 'win32':
     except Exception:
         pass  # 如果重新包装失败，继续使用默认编码
 
+
+def load_env_file(env_name):
+    """加载环境配置文件
+
+    Args:
+        env_name: 环境名称，如 erp-dev, erp-test
+
+    Returns:
+        bool: 是否成功加载配置文件
+    """
+    from pathlib import Path
+
+    # 查找配置文件的路径
+    script_dir = Path(__file__).resolve().parent
+    search_paths = [
+        script_dir.parent.parent.parent / f'.env.{env_name}',  # skill 目录 (.claude/skills/sapcli-skill/)
+        Path.cwd() / f'.env.{env_name}',  # 当前工作目录
+    ]
+
+    for env_file in search_paths:
+        if env_file.exists():
+            with open(env_file, encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#') and '=' in line:
+                        key, value = line.split('=', 1)
+                        os.environ[key] = value
+            return True
+    return False
+
+
 import sap
 import sap.cli
 import sap.adt
@@ -82,6 +113,9 @@ def parse_command_line(argv):
     arg_parser.add_argument(
         '--password', dest='password', type=str, default=None,
         help='Password')
+    arg_parser.add_argument(
+        '--env', dest='env', type=str, default='dev',
+        help='Environment name (loads .env.{name} file, default: dev)')
 
     arg_parser.add_argument("--mshost", default=os.getenv("SAP_MSHOST"), help="Message server address (if connecting "
                                                                               "via a load balancer)")
@@ -108,6 +142,29 @@ def parse_command_line(argv):
         cmd.install_parser(cmd_args)
 
     args = arg_parser.parse_args(argv[1:])
+
+    # 加载环境配置文件
+    if args.env:
+        if not load_env_file(args.env):
+            print(f'Warning: Environment file .env.{args.env} not found', file=sys.stderr)
+        else:
+            # 重新解析默认值，使其使用新加载的环境变量
+            if args.ashost is None:
+                args.ashost = os.getenv('SAP_ASHOST')
+            if args.client is None:
+                args.client = os.getenv('SAP_CLIENT')
+            if args.user is None:
+                args.user = os.getenv('SAP_USER')
+            if args.password is None:
+                args.password = os.getenv('SAP_PASSWORD')
+            if args.port is None:
+                port_env = os.getenv('SAP_PORT')
+                if port_env:
+                    args.port = int(port_env)
+            if args.ssl is None:
+                ssl_env = os.getenv('SAP_SSL')
+                if ssl_env and ssl_env.lower() in ('no', 'false', '0'):
+                    args.ssl = False
 
     loglevel = max(3 - args.verbose_count, 0) * 10
     log.setLevel(loglevel)

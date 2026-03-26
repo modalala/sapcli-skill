@@ -1,0 +1,71 @@
+{
+  "skill_name": "sapcli-skill",
+  "version": "3.0",
+  "description": "环境工作区测试 - 验证 skill 能正确引导 AI 执行 sapcli 命令，避免环境找不到等问题",
+  "evals": [
+    {
+      "id": 1,
+      "name": "read-program-default-env",
+      "prompt": "下载程序 ZSDR070",
+      "expected_output": "正确找到环境配置，执行 sapcli program read 命令并成功下载程序",
+      "expectations": [
+        "Skill 被正确触发",
+        "识别环境配置文件位于 skill 目录 (.claude/skills/sapcli-skill/.env.erp-dev)",
+        "构建完整的 sapcli 命令，包含所有必需环境变量",
+        "成功执行 sapcli program read ZSDR070",
+        "不出现 'No SAP Application Server Host name provided' 错误"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "read-program-from-project-root",
+      "prompt": "在项目根目录下，下载程序 ZSDR136",
+      "expected_output": "从项目根目录执行时也能正确找到环境配置并成功下载程序",
+      "expectations": [
+        "Skill 被正确触发",
+        "识别当前工作目录是项目根目录",
+        "正确指定环境配置文件路径 (使用绝对路径或切换到 skill 目录)",
+        "成功执行 sapcli program read ZSDR136",
+        "不因工作目录问题导致环境找不到"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "env-file-location",
+      "prompt": "sapcli 的环境配置文件在哪里",
+      "expected_output": "正确回答环境配置文件的完整路径",
+      "expectations": [
+        "Skill 被正确触发",
+        "回答环境配置文件位于 .claude/skills/sapcli-skill/ 目录下",
+        "列出可用的环境配置文件 (.env.erp-dev, .env.erp-test 等)",
+        "说明多环境支持机制"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "correct-sapcli-command",
+      "prompt": "给我一个完整的 sapcli 命令行示例来读取程序",
+      "expected_output": "提供包含所有必需环境变量的完整命令",
+      "expectations": [
+        "Skill 被正确触发",
+        "命令包含 PYTHONIOENCODING=utf-8",
+        "命令包含 PYTHONPATH 设置",
+        "命令包含所有 SAP 连接参数 (SAP_ASHOST, SAP_CLIENT, SAP_USER, SAP_PASSWORD, SAP_PORT, SAP_SSL)",
+        "命令格式正确可执行"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "missing-env-diagnosis",
+      "prompt": "执行 sapcli 时提示 'No SAP Application Server Host name provided' 怎么办",
+      "expected_output": "正确诊断并解决环境变量未加载问题",
+      "expectations": [
+        "Skill 被正确触发",
+        "识别这是环境变量未加载导致的错误",
+        "提供解决方案：检查环境配置文件路径",
+        "提供解决方案：使用正确的方式加载环境变量",
+        "提供完整的命令示例"
+      ]
+    }
+  ]
+}
