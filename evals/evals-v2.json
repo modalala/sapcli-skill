@@ -1,0 +1,97 @@
+{
+  "skill_name": "sapcli-skill",
+  "version": "2.0",
+  "description": "针对优化功能的新测试用例 - 编码修复、环境加载、连接验证",
+  "evals": [
+    {
+      "id": 1,
+      "name": "read-chinese-program",
+      "prompt": "查看 ZSDR136 程序代码",
+      "expected_output": "正确读取并显示包含中文注释的 ABAP 代码，无编码错误",
+      "expectations": [
+        "Skill 被正确触发",
+        "使用 sapcli program read 读取程序",
+        "中文注释正确显示，无乱码",
+        "无 UnicodeEncodeError 错误"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "use-env-script-default",
+      "prompt": "使用 sapcli-env.bat 读取 ZSDR136 程序",
+      "expected_output": "自动加载 erp-dev 环境配置并执行命令",
+      "expectations": [
+        "识别使用环境加载脚本的需求",
+        "正确使用 sapcli-env.bat program read ZSDR136",
+        "自动加载 .env.erp-dev 配置"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "specify-environment",
+      "prompt": "使用 erp-test 环境读取程序 ZHELLO_WORLD",
+      "expected_output": "使用指定环境 erp-test 执行操作",
+      "expectations": [
+        "识别需要切换环境",
+        "使用 sapcli-env.bat erp-test program read ZHELLO_WORLD",
+        "正确加载 .env.erp-test 配置"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "check-connection",
+      "prompt": "验证 SAP 连接是否正常",
+      "expected_output": "使用 check 命令验证连接配置",
+      "expectations": [
+        "Skill 被正确触发",
+        "识别连接验证需求",
+        "提供 sapcli check 命令或 sapcli-env.bat check",
+        "显示配置信息和连接状态"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "encoding-troubleshoot",
+      "prompt": "sapcli 输出中文乱码怎么办",
+      "expected_output": "提供编码问题解决方案",
+      "expectations": [
+        "Skill 被正确触发",
+        "识别编码问题",
+        "提供解决方案：使用 sapcli-env.bat 或设置 PYTHONIOENCODING=utf-8"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "windows-usage-doc",
+      "prompt": "在 Windows 上使用 sapcli 有什么注意事项",
+      "expected_output": "引用 SKILL.md 中的 Windows 使用注意事项",
+      "expectations": [
+        "Skill 被正确触发",
+        "提供编码问题说明",
+        "提供命令路径说明",
+        "提供环境配置说明"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "read-include-chinese",
+      "prompt": "读取 ZSDR136_FRM 这个 include 文件",
+      "expected_output": "正确读取包含中文注释的 include 文件",
+      "expectations": [
+        "Skill 被正确触发",
+        "使用 sapcli include read 读取文件",
+        "中文正确显示"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "negative-sapcli-spelling",
+      "prompt": "sapcli 怎么拼写",
+      "expected_output": "不触发 sapcli-skill 的 SAP 操作功能",
+      "expectations": [
+        "可能触发 skill 提供基本信息",
+        "不应执行实际的 SAP 操作命令"
+      ]
+    }
+  ]
+}

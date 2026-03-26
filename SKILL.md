@@ -103,6 +103,44 @@ sapcli cts list
 sapcli cts create --description "新功能开发"
 ```
 
+## Windows 使用注意事项
+
+### 编码问题
+
+Windows 控制台默认使用 GBK 编码，必须设置 `PYTHONIOENCODING=utf-8` 以避免中文乱码。
+
+### 运行 sapcli
+
+sapcli 通过 Python 直接运行，需要设置 PYTHONPATH 和环境变量：
+
+```bash
+# 设置环境变量
+PYTHONIOENCODING=utf-8
+PYTHONPATH=/path/to/sapcli-skill/tools/sapcli
+SAP_ASHOST=YourSapHost
+SAP_CLIENT=112
+SAP_USER=YourUsername
+SAP_PASSWORD=YourPassword
+SAP_PORT=8000
+SAP_SSL=no
+
+# 运行 sapcli
+python /path/to/sapcli-skill/tools/sapcli/bin/sapcli program read ZSDR136
+```
+
+### 环境配置文件
+
+配置文件位于 `.env.erp-dev`，包含 SAP 连接参数：
+
+```ini
+SAP_ASHOST=YourSapHost
+SAP_CLIENT=112
+SAP_USER=YourUsername
+SAP_PASSWORD=YourPassword
+SAP_PORT=8000
+SAP_SSL=no
+```
+
 ## 故障排除
 
 详见 `references/troubleshooting.md`

@@ -4,10 +4,21 @@
 
 import os.path
 import sys
+import io
 import logging
 from argparse import ArgumentParser
 import getpass
 import warnings
+
+# Windows 编码修复: 强制 stdout/stderr 使用 UTF-8 编码
+if sys.platform == 'win32':
+    try:
+        if hasattr(sys.stdout, 'buffer'):
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        if hasattr(sys.stderr, 'buffer'):
+            sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+    except Exception:
+        pass  # 如果重新包装失败，继续使用默认编码
 
 import sap
 import sap.cli

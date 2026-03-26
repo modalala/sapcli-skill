@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh-keygen:*)",
+      "Bash(chmod 600 ~/.ssh/config)",
+      "Bash(ssh:*)",
+      "Bash(ping:*)",
+      "Bash(git config:*)",
+      "Bash(git fetch:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}
